@@ -21,6 +21,14 @@ resource "aws_vpc" "hashicat" {
   }
 }
 
+module "s3-bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "2.13.0"
+  # insert the 5 required variables here
+  bucket_prefix = "david-joy"
+  
+}
+
 resource "aws_subnet" "hashicat" {
   vpc_id     = aws_vpc.hashicat.id
   cidr_block = var.subnet_prefix
@@ -128,9 +136,12 @@ resource "aws_instance" "hashicat" {
 
   tags = {
     Name = "${var.prefix}-hashicat-instance",
+    Department = "test",
     Billable = true
   }
 }
+
+
 
 # We're using a little trick here so we can run the provisioner without
 # destroying the VM. Do not do this in production.
